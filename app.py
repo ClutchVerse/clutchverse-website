@@ -7,7 +7,7 @@ from mcstatus import JavaServer
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'clutchverse_secret_key_123'
 
-# Render ke liye ekdum sahi default path
+# Render ke liye default path config
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 
 db = SQLAlchemy(app)
@@ -23,18 +23,20 @@ class User(UserMixin, db.Model):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# Ekdum simple aur direct function (Bina asyncio ke crash nahi hoga)
+# Sahi IP aur SRV record resolution ke saath function
 def get_server_status():
     try:
-        server = JavaServer.lookup("learn.clutchverse.live")
+        # Ab ye exact chal rahi SMP IP ko lookup karega
+        server = JavaServer.lookup("learn-farm.gl.joinmc.link")
         status = server.status()
         return {"status": "Online", "players": status.players.online, "version": status.version.name}
-    except Exception:
+    except Exception as e:
+        # Agar koi panga aaye toh Render console logs mein check karne ke liye
+        print(f"[MINECRAFT PING ERROR]: {e}")
         return {"status": "Offline", "players": 0, "version": "N/A"}
 
 @app.route('/')
 def home():
-    # Direct status load hoga ab bina crash kiye
     server_info = get_server_status()
     videos = [{"title": "ClutchVerse Final Match Highlights", "url": "https://youtu.be/example1", "views": "1.2K"}]
     return render_template('index.html', server_info=server_info, videos=videos)
