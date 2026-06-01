@@ -38,7 +38,7 @@
       {% if messages %}
         {% for message in messages %}
           <div class="flash">{{ message }}</div>
-        {% endfor %}
+        |{% endfor %}
       {% endif %}
     {% endwith %}
 
@@ -46,8 +46,8 @@
         <div class="card">
             <h2>🎮 Minecraft SMP Status</h2>
             <p><strong>IP:</strong> <code>learn-farm.gl.joinmc.link</code></p>
-            <p><strong>Status:</strong> {{ mc.status }}</p>
-            <p><strong>Online Players:</strong> {{ mc.players }}</p>
+            <p><strong>Status:</strong> {{ server_info.status }}</p>
+            <p><strong>Online Players:</strong> {{ server_info.players }}</p>
             <button class="btn" onclick="location.reload();">Refresh Status</button>
         </div>
 
